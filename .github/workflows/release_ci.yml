@@ -1,4 +1,4 @@
-name: Android CI
+name: VOXUS Android CI
 
 on:
   release:
@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   Build:
@@ -25,12 +26,12 @@ jobs:
     if: success()
 
     steps:
-      - name: Download Files
+      - name: Download VOXUS build files
         uses: actions/download-artifact@v8
         with:
           path: ./artifacts
 
-      - name: Organize Artifacts
+      - name: Collect VOXUS APKs and mappings
         run: |
           mkdir -p ./apks
 
@@ -50,12 +51,12 @@ jobs:
               arm64) abi="arm64-v8a" ;;
               *) abi="$arch" ;;
             esac
-            cp "$dir/mapping.txt" "./mappings/ZalithLauncher-mapping-${version}${abi:+-$abi}.txt"
+            cp "$dir/mapping.txt" "./mappings/VOXUSLauncher-mapping-${version}${abi:+-$abi}.txt"
           done
 
           echo "Found $(ls ./mappings/ | wc -l) mapping file(s)"
 
-      - name: Upload To Release
+      - name: Publish VOXUS APKs to GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event.release.tag_name }}
