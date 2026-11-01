@@ -56,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInParent
@@ -158,7 +159,15 @@ fun LauncherScreen(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF100B18))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF100B18),
+                            Color(0xFF171027),
+                            Color(0xFF0B0D18)
+                        )
+                    )
+                )
                 .onGloballyPositioned { coordinates ->
                     dragState.parentOrigin = coordinates.positionInRoot()
                 }
