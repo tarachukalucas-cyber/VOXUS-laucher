@@ -22,9 +22,6 @@ import android.util.Log
 import com.movtery.zalithlauncher.game.addons.mirror.MirrorPriority
 import com.movtery.zalithlauncher.game.addons.mirror.resolveMirrorPriority
 import com.movtery.zalithlauncher.game.download.assets.mapExceptionToMessage
-import com.movtery.zalithlauncher.game.download.assets.platform.curseforge.CurseForgeSearcher
-import com.movtery.zalithlauncher.game.download.assets.platform.curseforge.MCIM_CURSEFORGE_API
-import com.movtery.zalithlauncher.game.download.assets.platform.curseforge.models.CurseForgeFile
 import com.movtery.zalithlauncher.game.download.assets.platform.modrinth.MCIM_MODRINTH_API
 import com.movtery.zalithlauncher.game.download.assets.platform.modrinth.ModrinthSearcher
 import com.movtery.zalithlauncher.game.download.assets.platform.modrinth.models.ModrinthVersion
@@ -51,12 +48,6 @@ private val modrinthSearcher = ModrinthSearcher()
 private val mirrorModrinthSearcher = ModrinthSearcher(
     api = MCIM_MODRINTH_API,
     source = "MCIM Modrinth"
-)
-
-private val curseForgeSearcher = CurseForgeSearcher()
-private val mirrorCurseForgeSearcher = CurseForgeSearcher(
-    api = MCIM_CURSEFORGE_API,
-    source = "MCIM CurseForge"
 )
 
 /**
@@ -109,21 +100,6 @@ suspend fun <E: AbstractPlatformSearcher, T> mirroredPlatformSearcher(
 /**
  * 镜像源只能在中国地区使用
  */
-fun mirroredCurseForgeSource(
-    enabledMirror: Boolean = isChinaMainland()
-): List<CurseForgeSearcher> {
-    val source = resolveMirrorPriority(AllSettings.assetPlatformSource.getValue(), mainland = enabledMirror)
-    val mirrorSource = mirrorCurseForgeSearcher.takeIf { enabledMirror }
-    return when (source) {
-        MirrorPriority.OFFICIAL -> listOf(curseForgeSearcher)
-        MirrorPriority.MIRROR_FIRST ->
-            listOfNotNull(mirrorSource, curseForgeSearcher)
-    }
-}
-
-/**
- * 镜像源只能在中国地区使用
- */
 fun mirroredModrinthSource(
     enabledMirror: Boolean = isChinaMainland()
 ): List<ModrinthSearcher> {
@@ -160,16 +136,7 @@ suspend fun searchAssets(
         for (query in queries) {
             try {
                 val r = when (searchPlatform) {
-                    Platform.CURSEFORGE -> mirroredPlatformSearcher(
-                        searchers = mirroredCurseForgeSource(),
-                        printLog = false
-                    ) { searcher ->
-                        searcher.searchAssets(
-                            query = query,
-                            searchFilter = searchFilterForQuery,
-                            platformClasses = platformClasses
-                        )
-                    }
+                    Platform.CURSEFORGE -> throw IOException("CurseForge foi desativado nesta versão do ENDER Launcher.")
                     Platform.MODRINTH -> mirroredPlatformSearcher(
                         searchers = mirroredModrinthSource(),
                         printLog = false
@@ -211,14 +178,7 @@ suspend fun getVersions(
     platform: Platform,
     pageCallback: (chunk: Int, page: Int) -> Unit = { _, _ -> },
 ) = when (platform) {
-    Platform.CURSEFORGE -> mirroredPlatformSearcher(
-        searchers = mirroredCurseForgeSource()
-    ) { searcher ->
-        searcher.getVersions(
-            projectID = projectID,
-            pageCallback = pageCallback
-        )
-    }
+    Platform.CURSEFORGE -> throw IOException("CurseForge foi desativado nesta versão do ENDER Launcher.")
     Platform.MODRINTH -> mirroredPlatformSearcher(
         searchers = mirroredModrinthSource()
     ) { searcher ->
@@ -258,11 +218,7 @@ suspend fun <E> getProject(
 ) {
     runCatching {
         when (platform) {
-            Platform.CURSEFORGE -> mirroredPlatformSearcher(
-                searchers = mirroredCurseForgeSource()
-            ) { searcher ->
-                searcher.getProject(projectID)
-            }
+            Platform.CURSEFORGE -> throw IOException("CurseForge foi desativado nesta versão do ENDER Launcher.")
             Platform.MODRINTH -> mirroredPlatformSearcher(
                 searchers = mirroredModrinthSource()
             ) { searcher ->
@@ -337,40 +293,12 @@ suspend fun getVersionByLocalFile(file: File, sha1: String): PlatformVersion? = 
             }.getOrNull()
         }
 
-        val curseForgeDeferred = async(Dispatchers.IO) {
-            runCatching {
-                mirroredPlatformSearcher(
-                    searchers = mirroredCurseForgeSource(),
-                    printLog = false
-                ) { searcher ->
-                    searcher.getVersionByLocalFile(file, sha1)
-                }
-            }.getOrNull()
-        }
 
-        val result = select {
-            modrinthDeferred.onAwait { result ->
-                if (result != null) {
-                    curseForgeDeferred.cancel()
-                    result
-                } else {
-                    null
-                }
-            }
-            curseForgeDeferred.onAwait { result ->
-                if (result != null) {
-                    modrinthDeferred.cancel()
-                    result
-                } else {
-                    null
-                }
-            }
-        }
+
+        val result = modrinthDeferred.await()
 
         result ?: run {
-            if (!modrinthDeferred.isCompleted) modrinthDeferred.await()
-            else if (!curseForgeDeferred.isCompleted) curseForgeDeferred.await()
-            else null
+            if (!modrinthDeferred.isCompleted) modrinthDeferred.await() else null
         }
     }
 }
