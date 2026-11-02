@@ -1467,10 +1467,10 @@
     <string name="settings_control_mouse_block_touch_left">Bloquear Metade Esquerda</string>
     <string name="settings_control_mouse_block_touch_right">Bloquear Metade Direita</string>
     <string name="welcome_screen_subtitle">Venha e experimente algo novo.</string>
-    <string name="welcome_screen_intro_primary">Bem-vindo ao %1$s, um launcher de terceiros Minecraft: Java Edition projetado para dispositivos Android.</string>
-    <string name="welcome_screen_intro_core">Desenvolvido pelo PojavLauncher, ele oferece uma experiência moderna de lançamento e gerenciamento de jogos.</string>
-    <string name="welcome_screen_agreement_title">Documentos legais do VOXUS</string>
-    <string name="welcome_screen_agreement_confirmation">Li e concordo com os documentos acima.</string>
+    <string name="welcome_screen_intro_primary">Bem-vindo ao ENDER Launcher. Seu mundo, suas regras.</string>
+    <string name="welcome_screen_intro_core">Instale versões, gerencie seus mundos e explore conteúdos para Minecraft em um só lugar.</string>
+    <string name="welcome_screen_agreement_title">Termos e documentos do ENDER Launcher</string>
+    <string name="welcome_screen_agreement_confirmation">Li e concordo com os termos e documentos apresentados pelo ENDER Launcher.</string>
     <string name="agreement_content_unavailable">Este documento não está disponível.</string>
     <string name="agreement_update_title">Contratos atualizados</string>
     <string name="agreement_update_message">O Contrato do Usuário ou a Política de Privacidade foi atualizado. Por favor, revise e aceite ambos os documentos novamente antes de continuar.</string>
