@@ -251,12 +251,7 @@ suspend fun getProjectByVersion(
         ) { searcher ->
             searcher.getProject(projectId)
         }
-        Platform.CURSEFORGE -> mirroredPlatformSearcher(
-            searchers = mirroredCurseForgeSource(),
-            printLog = printLog
-        ) { searcher ->
-            searcher.getProject(projectId)
-        }
+        Platform.CURSEFORGE -> throw IOException("CurseForge foi desativado nesta versão do ENDER Launcher.")
     }
 }
 
@@ -318,18 +313,4 @@ suspend fun getModrinthVersBySha1(
     printLog = false
 ) { searcher ->
     searcher.getVersionFiles(sha1List = sha1List)
-}
-
-/**
- * 通过本地文件的 CurseForge 指纹批量获取 CurseForge 平台对应的文件
- * @param fingerprints 指纹列表，长度不应超过 [FINGERPRINT_BATCH_SIZE]
- * @return 键为文件指纹，值为匹配到的文件，未命中的指纹不在结果中
- */
-suspend fun getCFFilesByFingerprints(
-    fingerprints: List<Long>
-): Map<Long, CurseForgeFile> = mirroredPlatformSearcher(
-    searchers = mirroredCurseForgeSource(),
-    printLog = false
-) { searcher ->
-    searcher.getFilesByFingerprints(fingerprints = fingerprints)
 }
