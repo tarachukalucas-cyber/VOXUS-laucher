@@ -296,29 +296,46 @@ private fun ContentMenu(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 8.dp),
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
+                    .clip(MaterialTheme.shapes.extraLarge)
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF28164A),
+                                Color(0xFF17152D),
+                                Color(0xFF101827)
+                            )
+                        )
+                    )
+                    .padding(horizontal = 16.dp, vertical = 15.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = "ENDER Launcher",
-                    modifier = Modifier.size(38.dp)
+                    modifier = Modifier.size(48.dp)
                 )
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                    verticalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
                     Text(
                         text = "ENDER",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.titleLarge
+                        color = Color(0xFFF5EDFF),
+                        style = MaterialTheme.typography.headlineSmall
                     )
                     Text(
-                        text = "MINECRAFT JAVA LAUNCHER",
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "SEU MUNDO. SUAS REGRAS.",
+                        color = Color(0xFFC6A5FF),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "1.0",
+                    color = Color(0xFFD9C5FF),
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
             HomeGrid(
                 state = gridState,
