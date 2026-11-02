@@ -487,7 +487,9 @@ private fun ProductBanner(
     ) {
         Image(
             modifier = Modifier.size(52.dp),
-            painter = painterResource(R.mipmap.ic_launcher),
+            // Load the VectorDrawable foreground directly; adaptive launcher icons are XML wrappers
+            // and cannot be loaded by Compose painterResource.
+            painter = painterResource(R.drawable.ic_launcher_foreground),
             contentDescription = null
         )
 
