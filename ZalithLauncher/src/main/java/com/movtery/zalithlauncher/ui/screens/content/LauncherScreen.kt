@@ -211,10 +211,6 @@ fun LauncherScreen(
                     onDownloads = { backStackViewModel.mainScreen.navigateTo(NormalNavKey.SearchModPack) },
                     onSettings = { backStackViewModel.mainScreen.navigateTo(NormalNavKey.Settings.Launcher) }
                 )
-                if (dockedSide == ActionMenuSide.START) {
-                    Spacer(modifier = Modifier.weight(ActionMenuWeight))
-                }
-
                 CompositionLocalProvider(
                     LocalUriHandler provides object : UriHandler {
                         override fun openUri(uri: String) {
@@ -239,41 +235,9 @@ fun LauncherScreen(
                 )
                 }
 
-                // ActionMenu 对接到了 End，留出空位
-                if (dockedSide == ActionMenuSide.END) {
-                    Spacer(modifier = Modifier.weight(ActionMenuWeight))
-                }
             }
 
-            val isActionMenuTaller = maxHeight >= 600.dp
-            CompositionLocalProvider(LocalActionMenuDrag provides dragState) {
-                Box(
-                    modifier = Modifier
-                        .offset {
-                            val translation = if (dragState.floating) {
-                                dragState.cardPosition
-                            } else {
-                                dragState.landingOf(effectiveSide) + dragState.settleOffset.value
-                            }
-                            val x = if (isRtl) parentWidthPx - cardWidth.toPx() - translation.x else translation.x
-                            IntOffset(x.roundToInt(), translation.y.roundToInt())
-                        }
-                        .size(cardWidth, cardHeight)
-                ) {
-                    ActionMenu(
-                        modifier = Modifier.fillMaxSize(),
-                        isVisible = isVisible,
-                        isTaller = isActionMenuTaller,
-                        dockedSide = dockedSide,
-                        onLaunchGame = onLaunchGame,
-                        swapDirection = if (dockedSide == ActionMenuSide.END) AnimatedDirection.Right else AnimatedDirection.Left,
-                        pickUpScale = { dragState.scale },
-                        toAccountManageScreen = toAccountManageScreen,
-                        toVersionManageScreen = toVersionManageScreen,
-                        toVersionSettingsScreen = toVersionSettingsScreen
-                    )
-                }
-            }
+
         }
     }
 }
