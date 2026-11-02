@@ -202,9 +202,15 @@ fun LauncherScreen(
                 }
             }
 
-            // 内容区域
+            // ENDER navigation rail: real destinations backed by the launcher's existing navigation.
             Row(modifier = Modifier.fillMaxSize()) {
-                // ActionMenu 对接到了 Start，留出空位
+                EnderNavigationRail(
+                    onHome = { backStackViewModel.mainScreen.navigateTo(NormalNavKey.LauncherMain) },
+                    onAccount = toAccountManageScreen,
+                    onVersions = toVersionManageScreen,
+                    onDownloads = { backStackViewModel.mainScreen.navigateTo(NormalNavKey.SearchModPack) },
+                    onSettings = { backStackViewModel.mainScreen.navigateTo(NormalNavKey.Settings.Launcher) }
+                )
                 if (dockedSide == ActionMenuSide.START) {
                     Spacer(modifier = Modifier.weight(ActionMenuWeight))
                 }
@@ -269,6 +275,52 @@ fun LauncherScreen(
                 }
             }
         }
+    }
+}
+
+
+
+@Composable
+private fun EnderNavigationRail(
+    onHome: () -> Unit,
+    onAccount: () -> Unit,
+    onVersions: () -> Unit,
+    onDownloads: () -> Unit,
+    onSettings: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .width(68.dp)
+            .fillMaxSize()
+            .background(Color(0xFF111015))
+            .padding(horizontal = 8.dp, vertical = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Text("E", color = Color(0xFFE9D8FF), style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 12.dp))
+        EnderRailButton("▶", "Início", onHome)
+        EnderRailButton("♙", "Conta", onAccount)
+        EnderRailButton("▦", "Versões", onVersions)
+        EnderRailButton("⇩", "Downloads", onDownloads)
+        Spacer(modifier = Modifier.weight(1f))
+        EnderRailButton("⚙", "Configurações", onSettings)
+    }
+}
+
+@Composable
+private fun EnderRailButton(symbol: String, description: String, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.large)
+            .background(Color(0xFF211A2C))
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
+        Text(symbol, color = Color(0xFFB98BFF), style = MaterialTheme.typography.titleLarge)
+        Text(description, color = Color(0xFFD7CBE5), style = MaterialTheme.typography.labelSmall)
     }
 }
 
