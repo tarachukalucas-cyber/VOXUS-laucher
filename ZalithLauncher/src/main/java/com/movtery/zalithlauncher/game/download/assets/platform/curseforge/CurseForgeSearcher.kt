@@ -18,7 +18,6 @@
 
 package com.movtery.zalithlauncher.game.download.assets.platform.curseforge
 
-import com.movtery.zalithlauncher.BuildConfig
 import com.movtery.zalithlauncher.game.download.assets.platform.AbstractPlatformSearcher
 import com.movtery.zalithlauncher.game.download.assets.platform.Platform
 import com.movtery.zalithlauncher.game.download.assets.platform.PlatformClasses
@@ -51,13 +50,6 @@ class CurseForgeSearcher(
     platform = Platform.CURSEFORGE,
     source = source
 ) {
-    // The official CurseForge REST API requires the x-api-key header.
-    // The MCIM mirror is public and does not require this credential.
-    private val requestHeaders: List<Pair<String, Any?>>?
-        get() = if (api == CURSEFORGE_API && BuildConfig.CURSEFORGE_API.isNotBlank()) {
-            listOf("x-api-key" to BuildConfig.CURSEFORGE_API)
-        } else null
-
     override suspend fun searchAssets(
         query: String,
         searchFilter: PlatformSearchFilter,
@@ -65,7 +57,6 @@ class CurseForgeSearcher(
     ): CurseForgeSearchResult {
         return httpGetJson(
             url = "$api/mods/search",
-            headers = requestHeaders,
             parameters = searchFilter.toCurseForgeRequest(
                 query = query,
                 platformClasses = platformClasses
@@ -106,7 +97,6 @@ class CurseForgeSearcher(
         pageSize: Int = 100
     ): CurseForgeVersions = httpGetJson(
         url = "$api/mods/$projectID/files",
-        headers = requestHeaders,
         parameters = Parameters.build {
             append("index", index.toString())
             append("pageSize", pageSize.toString())
@@ -146,7 +136,6 @@ class CurseForgeSearcher(
         val hash = MurmurHash2Incremental.computeHash(file, byteToSkip = listOf(0x9, 0xa, 0xd, 0x20))
         return httpPostJson<CurseForgeFingerprintsMatches>(
             url = "$api/fingerprints",
-            headers = requestHeaders,
             body = mapOf("fingerprints" to listOf(hash))
         ).data.exactMatches
             ?.takeIf { it.isNotEmpty() }
@@ -164,7 +153,6 @@ class CurseForgeSearcher(
         if (fingerprints.isEmpty()) return emptyMap()
         val matches = httpPostJson<CurseForgeFingerprintsMatches>(
             url = "$api/fingerprints",
-            headers = requestHeaders,
             body = CurseForgeFingerprintsRequest(fingerprints = fingerprints)
         )
         return matches.data.exactMatches.orEmpty()
