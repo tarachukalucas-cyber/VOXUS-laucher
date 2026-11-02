@@ -102,6 +102,7 @@ import com.movtery.zalithlauncher.ui.screens.content.elements.CommonVersionInfoL
 import com.movtery.zalithlauncher.ui.screens.content.elements.PlayerFace
 import com.movtery.zalithlauncher.ui.screens.content.elements.VersionIconImage
 import com.movtery.zalithlauncher.ui.screens.content.home.HomeGrid
+import com.movtery.zalithlauncher.ui.screens.content.home.EnderHomeHeader
 import com.movtery.zalithlauncher.ui.screens.content.home.LocalActionMenuDrag
 import com.movtery.zalithlauncher.ui.screens.content.home.actionMenuDragAnchor
 import com.movtery.zalithlauncher.ui.screens.content.home.actionMenuDragExclusion
@@ -275,13 +276,23 @@ private fun ContentMenu(
         LocalHomeCardVersionSettings provides onOpenVersionSettings,
         LocalServerCardQuickPlay provides onQuickPlayServer
     ) {
-        HomeGrid(
-            state = gridState,
-            isVisible = isVisible,
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .animated(ctx)
-        )
+                .padding(horizontal = 6.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            EnderHomeHeader(
+                onLaunchGame = onLaunchGame,
+                modifier = Modifier.fillMaxWidth()
+            )
+            HomeGrid(
+                state = gridState,
+                isVisible = isVisible,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
