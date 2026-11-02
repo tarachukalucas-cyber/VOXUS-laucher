@@ -67,7 +67,6 @@ class CurseForgeSearcher(
     override suspend fun getProject(projectID: String): CurseForgeProject {
         val project = httpGetJson<CurseForgeProject>(
             url = "$api/mods/$projectID",
-            headers = requestHeaders
         )
         if (!project.isApproved()) throw NotFoundException("The project {$projectID} is not in a publicly available state.")
         return project
@@ -82,7 +81,6 @@ class CurseForgeSearcher(
     ): CurseForgeVersion {
         return httpGetJson(
             url = "$api/mods/$projectID/files/$fileID",
-            headers = requestHeaders
         )
     }
 
