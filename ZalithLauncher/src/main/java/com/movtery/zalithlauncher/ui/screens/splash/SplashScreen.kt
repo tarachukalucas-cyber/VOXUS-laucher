@@ -145,7 +145,7 @@ private fun LoadingScreen(
             ) {
                 Image(
                     modifier = Modifier.size(58.dp),
-                    painter = painterResource(R.drawable.img_launcher),
+                    painter = painterResource(R.mipmap.ic_launcher),
                     contentDescription = stringResource(R.string.generic_loading)
                 )
                 LinearWavyProgressIndicator(
