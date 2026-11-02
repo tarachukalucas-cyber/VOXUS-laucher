@@ -145,7 +145,10 @@ private fun LoadingScreen(
             ) {
                 Image(
                     modifier = Modifier.size(58.dp),
-                    painter = painterResource(R.mipmap.ic_launcher),
+                    // Use the VectorDrawable foreground directly. R.mipmap.ic_launcher
+                    // resolves to an adaptive-icon XML on Android 8+, which painterResource
+                    // cannot load and caused a fatal crash on startup.
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = stringResource(R.string.generic_loading)
                 )
                 LinearWavyProgressIndicator(
