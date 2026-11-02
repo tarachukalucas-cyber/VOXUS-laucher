@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -297,68 +298,129 @@ private fun ContentMenu(
     modifier: Modifier = Modifier,
 ) {
     val ctx = rememberAnimatedContext(isVisible = isVisible)
-    val gridState = rememberCardGridState()
+    val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
 
-    CompositionLocalProvider(
-        LocalHomeCardLauncher provides onLaunchGame,
-        LocalHomeCardVersionSettings provides onOpenVersionSettings,
-        LocalServerCardQuickPlay provides onQuickPlayServer
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .animated(ctx)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF100B18),
+                        Color(0xFF171027),
+                        Color(0xFF08070D)
+                    )
+                )
+            )
+            .padding(horizontal = 18.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .animated(ctx)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 12.dp)
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF28164A),
-                                Color(0xFF17152D),
-                                Color(0xFF101827)
-                            )
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            Color(0xFF35105C),
+                            Color(0xFF1B102B),
+                            Color(0xFF101018)
                         )
                     )
-                    .padding(horizontal = 16.dp, vertical = 15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = "ENDER Launcher",
-                    modifier = Modifier.size(48.dp)
                 )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    Text(
-                        text = "ENDER",
-                        color = Color(0xFFF5EDFF),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    Text(
-                        text = "SEU MUNDO. SUAS REGRAS.",
-                        color = Color(0xFFC6A5FF),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "1.0",
-                    color = Color(0xFFD9C5FF),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-            HomeGrid(
-                state = gridState,
-                isVisible = isVisible,
+                .padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "ENDER",
+                color = Color(0xFFF7EFFF),
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                text = "SEU MUNDO. SUAS REGRAS.",
+                color = Color(0xFFE0A8FF),
+                style = MaterialTheme.typography.labelMedium
+            )
+            Text(
+                text = "Seu próximo mundo começa aqui.",
+                color = Color(0xFFD8CBE4),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(Color(0xFF17131F))
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "PRONTO PARA JOGAR?",
+                color = Color(0xFFC98BFF),
+                style = MaterialTheme.typography.labelLarge
+            )
+            Text(
+                text = version?.getVersionName() ?: "Nenhuma versão selecionada",
+                color = Color(0xFFF5EDFF),
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = if (version != null) "Versão selecionada" else "Abra Versões no menu lateral para instalar ou selecionar uma versão.",
+                color = Color(0xFFBDB1C9),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            androidx.compose.material3.Button(
+                onClick = { version?.let(onLaunchGame) },
+                enabled = version != null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .height(54.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFB52BEB),
+                    contentColor = Color.White,
+                    disabledContainerColor = Color(0xFF45334D),
+                    disabledContentColor = Color(0xFFB8AABD)
+                ),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text(
+                    text = "JOGAR AGORA",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            if (version != null) {
+                androidx.compose.material3.OutlinedButton(
+                    onClick = { version?.let(onOpenVersionSettings) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color(0xFFE5C8FF)
+                    )
+                ) {
+                    Text("CONFIGURAR VERSÃO")
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(Color(0xFF21172D))
+                .padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                text = "ATALHOS",
+                color = Color(0xFFC98BFF),
+                style = MaterialTheme.typography.labelLarge
+            )
+            Text(
+                text = "Use o menu lateral para acessar Conta, Versões, Downloads e Configurações.",
+                color = Color(0xFFD8CBE4),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
