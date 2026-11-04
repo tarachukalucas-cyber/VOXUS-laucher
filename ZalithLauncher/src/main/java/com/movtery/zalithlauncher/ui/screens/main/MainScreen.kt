@@ -243,6 +243,8 @@ fun MainScreen(
                     changeTasksExpandedState()
                 }
             }
+
+            EnderMusicPlayer(modifier = Modifier.fillMaxWidth())
         }
     }
 }
